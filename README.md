@@ -1,5 +1,6 @@
 # BlockBusted
 A mock movie rental site with authentication, search, paging, routing and orders
+Created with C# ASP.NET LINQ AND Bootstrap
 
 Created for a university project 2020
 
