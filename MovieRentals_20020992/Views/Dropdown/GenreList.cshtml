@@ -1,0 +1,17 @@
+﻿@model MovieRentals_20020992.ViewModels.DropdownViewModel
+<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        @Html.RouteLink(HttpUtility.HtmlDecode("View Movies &#x25BE;"), "MoviesIndex")
+    </a>
+    <ul class="dropdown-menu">
+        @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <li class="dropdown-header"><h6>@Html.ActionLink("Manage Genres", "Index", "Genres") &raquo;</h6></li>
+        }
+        <li class="dropdown-header"><h6>@Html.RouteLink("View all Movies", "MoviesIndex") &raquo;</h6></li>
+        @foreach (var item in Model.GenreList)
+        {
+            <li class="dropLine">@Html.ActionLink(item.Type, item.Type, "Movies")</li>
+        }
+    </ul>
+</li>

@@ -1,0 +1,172 @@
+﻿@model MovieRentals_20020992.ViewModels.MovieIndexViewModel
+
+@{
+    ViewBag.Title = "Home";
+}
+
+<div class="jumbotron">
+    <a href="@Url.Action("Index", "Home")" title="Home" class="col-md-5">
+        <img alt="Logo" src="@Url.Content("~/Content/SiteImages/logo.png")" height="150" width="250">
+    </a>
+    <p class="lead">Movie rentals for all kinds of genres.<br /> Thousands of DVD's and BluRays to choose from!</p>
+    @if (!Request.IsAuthenticated)
+    {
+        <p class="btn btn-primary btn-lg">@Html.ActionLink(HttpUtility.HtmlDecode("Join Now &raquo;"), "Register", "Account")</p>
+    }
+    else
+    {
+        <p class="btn btn-primary btn-lg">@Html.RouteLink(HttpUtility.HtmlDecode("Start Shopping &raquo;"), "MoviesIndex")</p>
+    }
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Top pick</h2>
+
+        @{
+            foreach (var item in Model.topMovie)
+
+            {
+                <h3>
+                    <a href="@Url.Action("Details", "Movies", new { id = item.ID })">
+                        <span>@item.Title</span>
+
+                        @if (item.MovieImageMappings != null && item.MovieImageMappings.Any())
+                        {
+                            <img src="@(Url.Content(Constants.MovieImagePath) + item.MovieImageMappings.OrderBy(pim => pim.ImageNumber).ElementAt(0).MovieImage.FileName)" />
+                        }
+                    </a>
+                </h3>
+                <p class="description"><b>@Html.DisplayNameFor(modelItem => item.Description): </b>@Html.DisplayFor(modelItem => item.Description)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.ReleaseYear):</b> @Html.DisplayFor(modelItem => item.ReleaseYear)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Genre):</b> @Html.DisplayFor(modelItem => item.Genre.Type)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Price):</b> @Html.DisplayFor(modelItem => item.Price)</p>
+                if (item.Rating != 0)
+                {
+                    <p>
+                        <b>@Html.DisplayNameFor(modelItem => item.Rating):</b>
+                        @for (int i = 0; i < item.Rating; i++)
+                        {
+                            <text>&#9733;</text>
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p><b>@Html.DisplayNameFor(modelItem => item.Rating):</b> Unrated</p>
+                }
+                using (Html.BeginForm("AddToCart", "Cart"))
+                {
+                    <b>@Html.Raw("Weeks: ")</b>
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("ID", item.ID, new { id = "ID" })
+                    @Html.DropDownList("rentTime", Enumerable.Range(1, 4).Select(i => new
+                   SelectListItem
+                    { Text = i.ToString(), Value = i.ToString() }))
+                    <input type="submit" class="btn btn-primary btn-xs" value="Add to Cart" />
+
+                }
+
+            }
+        }
+
+    </div>
+    <div class="col-md-4">
+        <h2>Trending now</h2>
+        @{
+            foreach (var item in Model.trendingMovie)
+
+            {
+                <h3>
+                    <a href="@Url.Action("Details", "Movies", new { id = item.ID })">
+                        @item.Title<br />
+
+                        @if (item.MovieImageMappings != null && item.MovieImageMappings.Any())
+                        {
+                            <img src="@(Url.Content(Constants.MovieImagePath) + item.MovieImageMappings.OrderBy(pim => pim.ImageNumber).ElementAt(0).MovieImage.FileName)" />
+                        }
+                    </a>
+                </h3>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Description): </b>@Html.DisplayFor(modelItem => item.Description)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.ReleaseYear):</b> @Html.DisplayFor(modelItem => item.ReleaseYear)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Genre):</b> @Html.DisplayFor(modelItem => item.Genre.Type)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Price):</b> @Html.DisplayFor(modelItem => item.Price)</p>
+                if (item.Rating != 0)
+                {
+                    <p>
+                        <b>@Html.DisplayNameFor(modelItem => item.Rating):</b>
+                        @for (int i = 0; i < item.Rating; i++)
+                        {
+                            <text>&#9733;</text>
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p><b>@Html.DisplayNameFor(modelItem => item.Rating):</b> Unrated</p>
+                }
+                using (Html.BeginForm("AddToCart", "Cart"))
+                {
+                    <b>@Html.Raw("Weeks: ")</b>
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("ID", item.ID, new { id = "ID" })
+                    @Html.DropDownList("rentTime", Enumerable.Range(1, 4).Select(i => new
+                   SelectListItem
+                    { Text = i.ToString(), Value = i.ToString() }))
+                    <input type="submit" class="btn btn-primary btn-xs" value="Add to Cart" />
+
+                }
+
+            }
+        }
+    </div>
+    <div class="col-md-4">
+        <h2>New Release</h2>
+        @{
+            foreach (var item in Model.newRelease)
+
+            {
+                <h3>
+                    <a href="@Url.Action("Details", "Movies", new { id = item.ID })">
+                        @item.Title<br />
+
+                        @if (item.MovieImageMappings != null && item.MovieImageMappings.Any())
+                        {
+                            <img src="@(Url.Content(Constants.MovieImagePath) + item.MovieImageMappings.OrderBy(pim => pim.ImageNumber).ElementAt(0).MovieImage.FileName)" />
+                        }
+                    </a>
+                </h3>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Description): </b>@Html.DisplayFor(modelItem => item.Description)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.ReleaseYear):</b> @Html.DisplayFor(modelItem => item.ReleaseYear)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Genre):</b> @Html.DisplayFor(modelItem => item.Genre.Type)</p>
+                <p><b>@Html.DisplayNameFor(modelItem => item.Price):</b> @Html.DisplayFor(modelItem => item.Price)</p>
+                if (item.Rating != 0)
+                {
+                    <p>
+                        <b>@Html.DisplayNameFor(modelItem => item.Rating):</b>
+                        @for (int i = 0; i < item.Rating; i++)
+                        {
+                            <text>&#9733;</text>
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p><b>@Html.DisplayNameFor(modelItem => item.Rating):</b> Unrated</p>
+                }
+                using (Html.BeginForm("AddToCart", "Cart"))
+                {
+                    <b>@Html.Raw("Weeks: ")</b>
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("ID", item.ID, new { id = "ID" })
+                    @Html.DropDownList("rentTime", Enumerable.Range(1, 4).Select(i => new
+                   SelectListItem
+                    { Text = i.ToString(), Value = i.ToString() }))
+                    <input type="submit" class="btn btn-primary btn-xs" value="Add to Cart" />
+
+                }
+
+            }
+        }
+    </div>
+</div>

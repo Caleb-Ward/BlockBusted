@@ -1,0 +1,12 @@
+﻿@model MovieRentals_20020992.ViewModels.DropdownViewModel
+<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        Genre
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        @Html.ActionLink(Model.GenreList + HttpUtility.HtmlDecode(
+        Html.DisplayFor(model => Model.GenreList).ToString()), "Index", "Genre")
+
+    </ul>
+</li>

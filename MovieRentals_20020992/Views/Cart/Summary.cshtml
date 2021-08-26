@@ -1,0 +1,52 @@
+﻿@model MovieRentals_20020992.ViewModels.CartSummaryViewModel
+
+<ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            @Html.ActionLink("Cart: " + @Model.NumberOfItems + " movie(s) " + @HttpUtility.HtmlDecode(
+                Html.DisplayFor(model => Model.TotalCost).ToString()) + HttpUtility.HtmlDecode(" &#x25BE;"), "Index","Cart")
+        </a>
+        <ul class="dropdown-menu dropdown-menu-left">
+            @if (Model.CartItems.Count() > 0)
+            {
+                <li class="dropdown-header"><h6>@Html.ActionLink("Review Cart", "Index", "Cart") &raquo;</h6></li>
+                foreach (var item in Model.CartItems)
+                {
+                    <li class="cartItem">
+                        <a href="@Url.Action("Details", "Movies", new { id = item.Movie.ID })">
+                            <span>
+                                @if (item.Movie.MovieImageMappings != null && item.Movie.MovieImageMappings.Any())
+                                {
+                                    <img src="@(Url.Content(Constants.MovieThumbnailPath) + item.Movie.MovieImageMappings.OrderBy(pim => pim.ImageNumber).ElementAt(0).MovieImage.FileName)" />
+                                }
+                                <b>@item.Movie.Title</b> <br />
+                                @if (item.Movie.Rating > 0)
+                                {
+                                    for (int i = 0; i < item.Movie.Rating; i++)
+                                    {
+                                        <text>&#9733;</text>
+                                    }
+                                }
+                                else
+                                {
+                                    <text>Unrated</text>
+                                }<br />
+                                @item.Movie.ReleaseYear<br />
+                                $@item.Movie.Price <br />
+                                @item.RentTime week(s)
+                            </span>
+                        </a>
+                    </li>
+
+                }
+                <li class="cartTotal"><h6><b>Current Total: </b>$@Model.TotalCost</h6></li>
+            }
+            else
+            {
+                <li>Your Cart is empty.</li>
+            }
+
+        </ul>
+    </li>
+</ul>
+

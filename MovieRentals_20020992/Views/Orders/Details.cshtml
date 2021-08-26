@@ -1,0 +1,94 @@
+﻿@model MovieRentals_20020992.Models.Order
+
+@{
+    ViewBag.Title = "Order Details";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Movie(s)</h4>
+        </div>
+        <div class="col-md-2">
+            <h4>Weeks Rented</h4>
+        </div>
+        <div class="col-md-2">
+            <h4>Weekly Price</h4>
+        </div>
+        <div class="col-md-2">
+            <h4>Subtotal</h4>
+        </div>
+    </div>
+    @foreach (var item in Model.OrderLines)
+    {
+        <div class="row">
+            <div class="col-md-6"> @Html.DisplayFor(mv => item.MovieTitle)</div>
+            <div class="col-md-2">@Html.DisplayFor(rt => item.RentTime)</div>
+            <div class="col-md-2">@Html.DisplayFor(wp => item.WeeklyPrice)</div>
+            <div class="col-md-2">@(item.Movie.Price * item.RentTime)</div>
+        </div>
+    }
+    <br />
+    <dl class="dl-horizontal left">
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TotalPrice)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPrice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateCreated)
+        </dd>
+
+    </dl>
+</div>
+<p class="btn btn-primary btn-xs">
+    @Html.ActionLink("Back to List", "Index")
+
+</p>

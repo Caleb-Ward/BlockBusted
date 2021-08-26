@@ -1,0 +1,98 @@
+﻿@model MovieRentals_20020992.ViewModels.MovieIndexViewModel
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Movies";
+}
+
+<h2>Movies</h2>
+
+<p>
+    @(String.IsNullOrWhiteSpace(Model.Search) ? "Showing" : "You searched for '" + Model.Search + "' and found") @Model.Movies.TotalItemCount movie(s)
+    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+
+    @using (Html.BeginRouteForm("MoviesIndex", FormMethod.Get))
+    {
+        <label>Filter by Genre:</label>
+        @Html.DropDownListFor(vm => vm.Genre, Model.GenreFilterItems, "All");
+        <label>Sort By:</label>
+        @Html.DropDownListFor(vm => vm.SortBy, new SelectList(Model.Sorts, "Value", "Key"), "Default")
+        <input class="btn btn-primary btn-xs" type="submit" value="Filter" />
+        <input type="hidden" name="Search" id="Search" value="@Model.Search" />
+    }
+</p>
+<div class="row">
+    @{
+        foreach (var item in Model.Movies)
+
+        {
+        <div class="col-md-3">
+
+            <h3>
+                <a href="@Url.Action("Details", "Movies", new { id = item.ID })">
+                    <span>@item.Title</span>
+                    @if (item.MovieImageMappings != null && item.MovieImageMappings.Any())
+                    {
+                        <img src="@(Url.Content(Constants.MovieImagePath) + item.MovieImageMappings.OrderBy(pim => pim.ImageNumber).ElementAt(0).MovieImage.FileName)" />
+                    }
+                </a>
+            </h3>
+
+            <p class="description"><b>@Html.DisplayNameFor(modelItem => item.Description): </b>@Html.DisplayFor(modelItem => item.Description)</p>
+            <p><b>@Html.DisplayNameFor(modelItem => item.ReleaseYear):</b> @Html.DisplayFor(modelItem => item.ReleaseYear)</p>
+            <p><b>@Html.DisplayNameFor(modelItem => item.Genre):</b> @Html.DisplayFor(modelItem => item.Genre.Type)</p>
+            <p><b>@Html.DisplayNameFor(modelItem => item.Price):</b> @Html.DisplayFor(modelItem => item.Price)</p>
+            @if (item.Rating != 0)
+            {
+                <p><b>@Html.DisplayNameFor(modelItem => item.Rating):</b> 
+                @for (int i = 0; i < item.Rating; i++)
+                {
+                    <text>&#9733;</text>
+                }
+                </p>
+            }
+            else
+            {
+                <p><b>@Html.DisplayNameFor(modelItem => item.Rating):</b> Unrated</p>
+            }
+            <span>
+                @using (Html.BeginForm("AddToCart", "Cart"))
+                {
+                    <b>@Html.Raw("Weeks: ")</b>
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("ID", item.ID, new { id = "ID" })
+                    @Html.DropDownList("rentTime", Enumerable.Range(1, 4).Select(i => new
+                   SelectListItem
+                    { Text = i.ToString(), Value = i.ToString() }))
+                    <input type="submit" class="btn btn-primary btn-xs" value="Add to Cart" />
+
+                }
+            </span>
+            @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID })
+                @Html.Raw(" | ")
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                @Html.Raw(" | ")
+                @Html.ActionLink("Details", "Details", new { id = item.ID })
+            }
+
+        </div>
+        }
+    }
+</div>
+
+<div>
+    Page @(Model.Movies.PageCount < Model.Movies.PageNumber ? 0 :Model.Movies.PageNumber) of @Model.Movies.PageCount
+    @Html.PagedListPager(Model.Movies, page => Url.Action("Index", new
+    {
+        genre = @Model.Genre,
+        Search = @Model.Search,
+        sortBy = @Model.SortBy,
+        page
+        }))
+</div>
+

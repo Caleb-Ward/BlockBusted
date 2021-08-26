@@ -1,0 +1,113 @@
+﻿@model MovieRentals_20020992.Models.Movie
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Movie</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReleaseYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReleaseYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+
+        <dd>
+            @if (Model.Rating != 0)
+            {
+                    for (int i = 0; i < Model.Rating; i++)
+                    {
+                        <text>&#9733;</text>
+                    }
+            }
+            else
+            {
+                 <p>Unrated</p>
+            }
+        </dd>
+        @if (Model.MovieImageMappings != null && Model.MovieImageMappings.Any())
+        {
+            <dt></dt>
+            <dd>
+                <img src="@(Url.Content(Constants.MovieImagePath) + Model.MovieImageMappings.OrderBy(pim=>pim.ImageNumber).ElementAt(0).MovieImage.FileName)"
+                     style=padding:5px; />
+            </dd>
+            <dt></dt>
+            <dd>
+                @foreach (var item in Model.MovieImageMappings.OrderBy(mim => mim.ImageNumber))
+                {
+                    <a href="@(Url.Content(Constants.MovieImagePath) +  item.MovieImage.FileName)">
+                        <img src="@(Url.Content(Constants.MovieThumbnailPath) + item.MovieImage.FileName)" style=padding:5px>
+                    </a>
+                }
+            </dd>
+        }
+        <dt>
+            Weeks to Rent:
+        </dt>
+        <dd>
+            @using (Html.BeginForm("AddToCart", "Cart"))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.ID)
+                @Html.DropDownList("rentTime", Enumerable.Range(1, 4).Select(i => new
+               SelectListItem
+                { Text = i.ToString(), Value = i.ToString() }))
+                <input type="submit" class="btn btn-primary btn-xs" value="Add to Cart" />
+
+            }
+        </dd>
+
+
+
+    </dl>
+</div>
+<p>
+    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID })
+        @Html.Raw(" | ")
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

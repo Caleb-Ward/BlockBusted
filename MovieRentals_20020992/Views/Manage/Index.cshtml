@@ -1,0 +1,21 @@
+﻿@model MovieRentals_20020992.Models.ApplicationUser
+@{
+    ViewBag.Title = "My Details";
+}
+<h2>@ViewBag.Title</h2>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        @Html.Partial("_UserDetailsPartial", Model)
+        <dt>
+            Password
+        </dt>
+        <dd>
+            @Html.ActionLink("Change your Password", "ChangePassword")
+        </dd>
+    </dl>
+</div>
+<p class="btn btn-primary">
+    @Html.ActionLink("Edit Details", "Edit", new { id = Model.Id })
+</p>
+<p class="btn btn-primary">@Html.ActionLink("View my Orders", "Index", "Orders")</p>

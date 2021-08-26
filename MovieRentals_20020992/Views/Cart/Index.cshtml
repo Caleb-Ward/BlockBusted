@@ -1,0 +1,74 @@
+﻿@model MovieRentals_20020992.ViewModels.CartViewModel
+
+@{
+    ViewBag.Title = "Your Cart";
+}
+<h2>@ViewBag.Title</h2>
+@if (Model.CartLines.Count() > 0)
+{
+<div>
+    @using (Html.BeginForm("UpdateCart", "Cart"))
+    {
+        @Html.AntiForgeryToken();
+        <input class="btn btn-sm btn-success" type="submit" value="Update Cart" />
+        <hr />
+        <div class="row">
+            @for (int i = 0; i < Model.CartLines.Count; i++)
+            {
+            <div class="col-md-3 smaller">
+                <h3>
+                    @Html.ActionLink(Model.CartLines[i].Movie.Title, "Details",
+            "Movies", new { id = Model.CartLines[i].MovieID }, null) <br />
+                    @if (Model.CartLines[i].Movie.MovieImageMappings != null &&
+       Model.CartLines[i].Movie.MovieImageMappings.Any())
+                    {
+                        <a href="@Url.Action("Details", "Movies", new { id = Model.CartLines[i].MovieID })">
+                            <img src="@(Url.Content(Constants.MovieImagePath) +
+              Model.CartLines[i].Movie.MovieImageMappings.OrderBy(mim => mim.ImageNumber).ElementAt(0).MovieImage.FileName)" />
+                        </a>
+                    }
+                </h3>
+                @Html.HiddenFor(movieID => Model.CartLines[i].MovieID)
+                <span class="smallBox">
+                    <b>Weeks rented: </b>
+                    @Html.TextBoxFor(rentTime => Model.CartLines[i].RentTime)
+                    @Html.ValidationMessageFor(rentTime => Model.CartLines[i].RentTime, "", new { @class = "text-danger" })
+                </span><br />
+
+                <span><b>Price: </b>@Html.DisplayFor(price => Model.CartLines[i].Movie.Price)</span>
+
+                <p><b>Subtotal: </b>@((Model.CartLines[i].RentTime * Model.CartLines[i].Movie.Price).ToString("c"))</p>
+                <p class="btn btn-primary btn-xs">@Html.ActionLink("Remove", "RemoveLine", "Cart", new { id = Model.CartLines[i].Movie.ID }, null)</p>
+
+            </div>
+            }
+        </div>
+    }
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <b>@Html.DisplayNameFor(model => model.TotalCost)</b>
+            </div>
+            <div class="col-md-1">
+                @Html.DisplayFor(model => model.TotalCost)
+            </div>
+            <div class="col-md-1">
+                @Html.ActionLink("Order now", "Review", "Orders", null, new { @class = "btn btnsm btn-success" })
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    <p> Your Cart is empty</p>
+}
+
+<div>
+    <p class="btn btn-primary btn-xs">@Html.ActionLink("Continue Shopping", "Index", "Movies")</p>
+</div>
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+}

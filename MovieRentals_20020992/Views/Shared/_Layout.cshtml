@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - BLOCKBUSTED</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("BLOCKBUSTED", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.Action("GenreList", "Dropdown")</li>
+
+                    @if (Request.IsAuthenticated && User.IsInRole("Admin")) // only visible if Admin
+                    {
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        @Html.ActionLink(HttpUtility.HtmlDecode("Admin &#x25BE;"), "Index","Admin")
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropLine">@Html.ActionLink("Manage Images", "Index", "MovieImages")</li>
+                        <li class="dropLine">@Html.ActionLink("Manage Roles", "Index", "RolesAdmin")</li>
+                        <li class="dropLine">@Html.ActionLink("Manage Users", "Index", "UsersAdmin")</li>
+                        <li class="dropLine">@Html.ActionLink("Manage Genres", "Index", "Genres")</li>
+                        <li class="dropLine">@Html.ActionLink("View all Orders", "Index", "Orders")</li>                         
+
+                    </ul>
+                </li>
+                    }
+
+                </ul>
+
+                @using (Html.BeginRouteForm("MoviesIndex", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
+                {
+                    <div class="form-group">
+                        @Html.TextBox("Search", null, new { @class = "form-control", @placeholder = "Search Movies" })
+                    </div>
+                    <button type="submit" class="btn btn-default">Search</button>
+                }
+
+                @Html.Partial("_LoginPartial")
+                @Html.Action("Summary", "Cart")
+
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - BLOCKBUSTED - Caleb Ward -  20020992</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
